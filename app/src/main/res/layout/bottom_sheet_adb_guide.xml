@@ -94,7 +94,7 @@
                     app:icon="@drawable/ic_copy"
                     app:iconGravity="textStart"
                     app:iconPadding="0dp"
-                    style="@style/Widget.Material3.Button.IconButton.FilledTonal" />
+                    style="@style/Widget.Material3.Button.TonalButton" />
 
             </LinearLayout>
 
