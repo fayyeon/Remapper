@@ -210,7 +210,7 @@ class KeyCombinationDetector(
             // Double press detected!
             handler.removeCallbacks(volPowerSinglePressRunnable)
             lastVolPowerComboReleaseTime = 0L
-            onTriggerDetected(TriggerType.VOLUME_UP_POWER_DOUBLE)
+            onTriggerDetected(TriggerType.VOLUME_UP_PLUS_POWER_DOUBLE)
         } else {
             // Schedule single press check
             lastVolPowerComboReleaseTime = now

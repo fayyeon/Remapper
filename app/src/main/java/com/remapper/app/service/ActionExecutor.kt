@@ -345,7 +345,7 @@ class ActionExecutor(private val service: AccessibilityService) {
             } catch (_: Exception) {}
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            launchIntent(Intent(Settings.ACTION_REDUCE_BRIGHT_COLORS_SETTINGS))
+            launchIntent(Intent("android.settings.REDUCE_BRIGHT_COLORS_SETTINGS"))
         } else {
             launchIntent(Intent(Settings.ACTION_DISPLAY_SETTINGS))
         }
@@ -361,7 +361,7 @@ class ActionExecutor(private val service: AccessibilityService) {
                 return
             } catch (_: Exception) {}
         }
-        launchIntent(Intent(Settings.ACTION_NIGHT_DISPLAY_SETTINGS))
+        launchIntent(Intent("android.settings.NIGHT_DISPLAY_SETTINGS"))
     }
 
     private fun toggleCameraAccess() {
@@ -377,7 +377,7 @@ class ActionExecutor(private val service: AccessibilityService) {
     }
 
     private fun toggleDataSaver() {
-        launchIntent(Intent(Settings.ACTION_DATA_SAVER_SETTINGS))
+        launchIntent(Intent("android.settings.DATA_SAVER_SETTINGS"))
     }
 
     private fun togglePersonalHotspot() {
