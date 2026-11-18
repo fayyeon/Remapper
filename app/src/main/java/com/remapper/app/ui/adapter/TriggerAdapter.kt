@@ -14,7 +14,13 @@ class TriggerAdapter(
     private val onToggleTrigger: (TriggerType, Boolean) -> Unit
 ) : RecyclerView.Adapter<TriggerAdapter.TriggerViewHolder>() {
 
-    private val triggers = TriggerType.entries
+    private val triggers = mutableListOf<TriggerType>()
+
+    fun setTriggers(newTriggers: List<TriggerType>) {
+        triggers.clear()
+        triggers.addAll(newTriggers)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TriggerViewHolder {
         val binding = ItemTriggerCardBinding.inflate(

@@ -16,6 +16,7 @@ import com.remapper.app.data.TriggerType
 import com.remapper.app.databinding.ActivityMainBinding
 import com.remapper.app.service.RemapperAccessibilityService
 import com.remapper.app.ui.adapter.TriggerAdapter
+import com.remapper.app.util.NavigationModeHelper
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,7 +48,14 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         updateServiceStatus()
         updatePermissionCards()
-        triggerAdapter.notifyDataSetChanged()
+        // Re-evaluate navigation mode and refresh visible triggers
+        val visibleTriggers = getVisibleTriggers()
+        triggerAdapter.setTriggers(visibleTriggers)
+    }
+
+    private fun getVisibleTriggers(): List<TriggerType> {
+        val is3Button = NavigationModeHelper.is3ButtonNavigation(this)
+        return TriggerType.entries.filter { !it.is3ButtonNavOnly || is3Button }
     }
 
     private fun setupServiceCard() {
@@ -91,6 +99,9 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = triggerAdapter
         }
+
+        // Set initial visible triggers based on navigation mode
+        triggerAdapter.setTriggers(getVisibleTriggers())
     }
 
     private fun openActionPicker(trigger: TriggerType) {

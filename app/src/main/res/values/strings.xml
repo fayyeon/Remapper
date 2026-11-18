@@ -15,8 +15,14 @@
     <string name="no_action_assigned">None (Tap to configure)</string>
 
     <!-- Triggers -->
-    <string name="trigger_double_press_home">Double press Home</string>
-    <string name="trigger_double_press_home_desc">Quickly tap the Home button twice in succession</string>
+    <string name="trigger_hold_home">Hold Home button</string>
+    <string name="trigger_hold_home_desc">Press and hold Home button (overrides Google Assistant)</string>
+
+    <string name="trigger_hold_recents">Hold Recent Apps button</string>
+    <string name="trigger_hold_recents_desc">Press and hold Recent Apps button on 3-button navigation</string>
+
+    <string name="trigger_hold_back">Hold Back button</string>
+    <string name="trigger_hold_back_desc">Press and hold Back button on 3-button navigation</string>
 
     <string name="trigger_volume_up_plus_down">Volume Up + Volume Down</string>
     <string name="trigger_volume_up_plus_down_desc">Press both Volume Up and Volume Down together</string>
@@ -30,10 +36,14 @@
     <string name="trigger_volume_up_power_double">Volume Up + Power (Double Press)</string>
     <string name="trigger_volume_up_power_double_desc">Press Volume Up and Power button twice in rapid succession</string>
 
+    <string name="gesture_mode_notice">Gesture navigation detected. 3-button navigation triggers (Hold Home, Hold Recents, Hold Back) are hidden.</string>
+    <string name="activities_count">%1$d activities</string>
+
     <!-- Action Categories -->
     <string name="tab_quick_panel">Quick Panel &amp; System</string>
     <string name="tab_apps">Installed Apps</string>
     <string name="tab_shortcuts">App Actions &amp; Shortcuts</string>
+    <string name="tab_all_activities">All App Activities</string>
     <string name="search_hint">Search actions or apps…</string>
     <string name="choose_action_title">Choose Action</string>
     <string name="clear_action">Clear Mapping</string>

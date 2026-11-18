@@ -1,5 +1,6 @@
 package com.remapper.app.service
 
+import android.accessibilityservice.AccessibilityService
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,20 +10,20 @@ import android.os.Looper
 import android.os.SystemClock
 import android.view.KeyEvent
 import com.remapper.app.data.TriggerType
+import com.remapper.app.util.NavigationModeHelper
 
 /**
- * High-performance state machine for detecting:
- * 1. Double press Home
- * 2. Single press Volume Up + Volume Down
- * 3. Single press Volume Up + Power
- * 4. Hold Volume Up + Power
- * 5. Double press Volume Up + Power
+ * State machine for detecting hardware button combinations:
+ * - 3-Button Navigation: Hold Home (overrides Assistant), Hold Recents, Hold Back
+ * - Volume & Power: Vol Up + Down, Vol Up + Power (Single, Hold, Double Press)
  */
 class KeyCombinationDetector(
-    private val context: Context,
+    private val service: AccessibilityService,
+    private val isTriggerActive: (TriggerType) -> Boolean,
     private val onTriggerDetected: (TriggerType) -> Unit
 ) {
 
+    private val context: Context get() = service
     private val handler = Handler(Looper.getMainLooper())
 
     // Key states
@@ -34,8 +35,25 @@ class KeyCombinationDetector(
     private var volDownPressTime = 0L
     private var powerPressTime = 0L
 
-    // Double press Home tracking
-    private var lastHomePressTime = 0L
+    // Hold Navigation Keys tracking
+    private var isHomeHoldTriggered = false
+    private var isRecentsHoldTriggered = false
+    private var isBackHoldTriggered = false
+
+    private val homeHoldRunnable = Runnable {
+        isHomeHoldTriggered = true
+        onTriggerDetected(TriggerType.HOLD_HOME)
+    }
+
+    private val recentsHoldRunnable = Runnable {
+        isRecentsHoldTriggered = true
+        onTriggerDetected(TriggerType.HOLD_RECENTS)
+    }
+
+    private val backHoldRunnable = Runnable {
+        isBackHoldTriggered = true
+        onTriggerDetected(TriggerType.HOLD_BACK)
+    }
 
     // Volume Up + Down combo tracking
     private var isVolUpDownTriggered = false
@@ -56,11 +74,10 @@ class KeyCombinationDetector(
         onTriggerDetected(TriggerType.VOLUME_UP_PLUS_POWER_SINGLE)
     }
 
-    // Screen receiver to assist power key detection on devices where power events are filtered
+    // Screen receiver to assist power key detection
     private val screenReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val now = SystemClock.uptimeMillis()
-            // If Volume Up was pressed right before screen off/on, detect Vol Up + Power!
             if (isVolUpPressed && (now - volUpPressTime) < 800) {
                 handleVolPowerComboDown(now)
                 handler.postDelayed({
@@ -86,29 +103,85 @@ class KeyCombinationDetector(
     }
 
     /**
-     * Called from AccessibilityService.onKeyEvent
-     * Returns true if event is consumed, false otherwise.
+     * Intercepts key events from AccessibilityService.
      */
     fun onKeyEvent(event: KeyEvent): Boolean {
         val keyCode = event.keyCode
         val action = event.action
         val now = SystemClock.uptimeMillis()
 
-        // 1. Double press Home
-        if (keyCode == KeyEvent.KEYCODE_HOME) {
-            if (action == KeyEvent.ACTION_DOWN) {
-                if (now - lastHomePressTime <= DOUBLE_PRESS_TIMEOUT_MS) {
-                    lastHomePressTime = 0L
-                    onTriggerDetected(TriggerType.DOUBLE_PRESS_HOME)
-                    return true
-                } else {
-                    lastHomePressTime = now
+        // 1. Navigation Button Holds (Only enabled on 3-button navigation)
+        if (NavigationModeHelper.is3ButtonNavigation(context)) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_HOME -> {
+                    if (!isTriggerActive(TriggerType.HOLD_HOME)) return false
+
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        isHomeHoldTriggered = false
+                        handler.removeCallbacks(homeHoldRunnable)
+                        handler.postDelayed(homeHoldRunnable, HOLD_NAV_BUTTON_TIMEOUT_MS)
+                        return true
+                    } else if (action == KeyEvent.ACTION_UP) {
+                        handler.removeCallbacks(homeHoldRunnable)
+                        if (isHomeHoldTriggered) {
+                            isHomeHoldTriggered = false
+                            return true
+                        } else {
+                            // Released before hold duration: perform standard Home action
+                            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                            return true
+                        }
+                    }
+                    return false
+                }
+
+                KeyEvent.KEYCODE_APP_SWITCH -> {
+                    if (!isTriggerActive(TriggerType.HOLD_RECENTS)) return false
+
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        isRecentsHoldTriggered = false
+                        handler.removeCallbacks(recentsHoldRunnable)
+                        handler.postDelayed(recentsHoldRunnable, HOLD_NAV_BUTTON_TIMEOUT_MS)
+                        return true
+                    } else if (action == KeyEvent.ACTION_UP) {
+                        handler.removeCallbacks(recentsHoldRunnable)
+                        if (isRecentsHoldTriggered) {
+                            isRecentsHoldTriggered = false
+                            return true
+                        } else {
+                            // Released before hold duration: perform standard Recents action
+                            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            return true
+                        }
+                    }
+                    return false
+                }
+
+                KeyEvent.KEYCODE_BACK -> {
+                    if (!isTriggerActive(TriggerType.HOLD_BACK)) return false
+
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        isBackHoldTriggered = false
+                        handler.removeCallbacks(backHoldRunnable)
+                        handler.postDelayed(backHoldRunnable, HOLD_NAV_BUTTON_TIMEOUT_MS)
+                        return true
+                    } else if (action == KeyEvent.ACTION_UP) {
+                        handler.removeCallbacks(backHoldRunnable)
+                        if (isBackHoldTriggered) {
+                            isBackHoldTriggered = false
+                            return true
+                        } else {
+                            // Released before hold duration: perform standard Back action
+                            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                            return true
+                        }
+                    }
+                    return false
                 }
             }
-            return false
         }
 
-        // 2 & 3 & 4 & 5: Volume & Power combinations
+        // 2. Volume & Power Combinations
         when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 if (action == KeyEvent.ACTION_DOWN) {
@@ -152,7 +225,9 @@ class KeyCombinationDetector(
         if (isVolUpPressed && isVolDownPressed) {
             if (!isVolUpDownTriggered) {
                 isVolUpDownTriggered = true
-                onTriggerDetected(TriggerType.VOLUME_UP_PLUS_DOWN)
+                if (isTriggerActive(TriggerType.VOLUME_UP_PLUS_DOWN)) {
+                    onTriggerDetected(TriggerType.VOLUME_UP_PLUS_DOWN)
+                }
             }
             return true
         }
@@ -167,7 +242,6 @@ class KeyCombinationDetector(
     }
 
     private fun checkCombosOnUp(now: Long): Boolean {
-        // Handle Volume Up + Volume Down release
         if (isVolUpDownTriggered) {
             if (!isVolUpPressed && !isVolDownPressed) {
                 isVolUpDownTriggered = false
@@ -175,7 +249,6 @@ class KeyCombinationDetector(
             return true
         }
 
-        // Handle Volume Up + Power release
         if (isVolPowerBothDown) {
             handleVolPowerComboUp(now)
             return true
@@ -190,7 +263,6 @@ class KeyCombinationDetector(
             isVolPowerHoldTriggered = false
             handler.removeCallbacks(volPowerSinglePressRunnable)
 
-            // Start hold timer
             handler.postDelayed(volPowerHoldRunnable, HOLD_TIMEOUT_MS)
         }
     }
@@ -200,25 +272,26 @@ class KeyCombinationDetector(
         handler.removeCallbacks(volPowerHoldRunnable)
 
         if (isVolPowerHoldTriggered) {
-            // Already handled as hold
             isVolPowerHoldTriggered = false
             return
         }
 
-        // Check if double press
         if (now - lastVolPowerComboReleaseTime <= DOUBLE_PRESS_TIMEOUT_MS) {
-            // Double press detected!
             handler.removeCallbacks(volPowerSinglePressRunnable)
             lastVolPowerComboReleaseTime = 0L
-            onTriggerDetected(TriggerType.VOLUME_UP_PLUS_POWER_DOUBLE)
+            if (isTriggerActive(TriggerType.VOLUME_UP_PLUS_POWER_DOUBLE)) {
+                onTriggerDetected(TriggerType.VOLUME_UP_PLUS_POWER_DOUBLE)
+            }
         } else {
-            // Schedule single press check
             lastVolPowerComboReleaseTime = now
-            handler.postDelayed(volPowerSinglePressRunnable, DOUBLE_PRESS_TIMEOUT_MS)
+            if (isTriggerActive(TriggerType.VOLUME_UP_PLUS_POWER_SINGLE)) {
+                handler.postDelayed(volPowerSinglePressRunnable, DOUBLE_PRESS_TIMEOUT_MS)
+            }
         }
     }
 
     companion object {
+        private const val HOLD_NAV_BUTTON_TIMEOUT_MS = 450L
         private const val DOUBLE_PRESS_TIMEOUT_MS = 380L
         private const val HOLD_TIMEOUT_MS = 500L
     }

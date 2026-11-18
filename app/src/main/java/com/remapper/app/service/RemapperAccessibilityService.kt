@@ -23,9 +23,15 @@ class RemapperAccessibilityService : AccessibilityService() {
 
         prefsManager = PreferencesManager.getInstance(this)
         actionExecutor = ActionExecutor(this)
-        keyDetector = KeyCombinationDetector(this) { trigger ->
-            onTriggerFired(trigger)
-        }
+        keyDetector = KeyCombinationDetector(
+            service = this,
+            isTriggerActive = { trigger ->
+                prefsManager.isTriggerEnabled(trigger) && prefsManager.getActionForTrigger(trigger) != null
+            },
+            onTriggerDetected = { trigger ->
+                onTriggerFired(trigger)
+            }
+        )
 
         // Configure accessibility info
         val info = serviceInfo ?: AccessibilityServiceInfo()

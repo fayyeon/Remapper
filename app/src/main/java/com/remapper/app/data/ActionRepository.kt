@@ -416,4 +416,79 @@ object ActionRepository {
         // Strict alphabetical sort
         return list.sortedBy { it.title.lowercase(Locale.ROOT) }
     }
+
+    /**
+     * Queries all activities of every single installed app on the device.
+     * Groups them by App, strictly sorted alphabetically by app label.
+     */
+    fun getAllAppActivities(context: Context): List<AppActivityGroup> {
+        val pm = context.packageManager
+        val packages = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            pm.getInstalledPackages(PackageManager.PackageInfoFlags.of(PackageManager.GET_ACTIVITIES.toLong()))
+        } else {
+            pm.getInstalledPackages(PackageManager.GET_ACTIVITIES)
+        }
+
+        val groups = mutableListOf<AppActivityGroup>()
+
+        for (pkgInfo in packages) {
+            val activities = pkgInfo.activities ?: continue
+            if (activities.isEmpty()) continue
+
+            val appInfo = pkgInfo.applicationInfo ?: continue
+            val appLabel = appInfo.loadLabel(pm).toString()
+            val appIcon = try {
+                appInfo.loadIcon(pm)
+            } catch (_: Exception) {
+                null
+            }
+
+            val activityItems = activities.map { act ->
+                val rawLabel = act.loadLabel(pm).toString()
+                val displayTitle = if (rawLabel.isNotEmpty() && rawLabel != pkgInfo.packageName && rawLabel != act.name) {
+                    rawLabel
+                } else {
+                    val simpleName = act.name.substringAfterLast('.')
+                    simpleName.removeSuffix("Activity")
+                }
+
+                ActivityActionItem(
+                    title = if (displayTitle.isEmpty()) act.name.substringAfterLast('.') else displayTitle,
+                    className = act.name,
+                    packageName = act.packageName,
+                    isExported = act.exported
+                )
+            }.sortedBy { it.title.lowercase(Locale.ROOT) }
+
+            if (activityItems.isNotEmpty()) {
+                groups.add(
+                    AppActivityGroup(
+                        appName = appLabel,
+                        packageName = pkgInfo.packageName,
+                        appIcon = appIcon,
+                        activities = activityItems,
+                        isExpanded = false
+                    )
+                )
+            }
+        }
+
+        // Strict alphabetical sort by App Name
+        return groups.sortedBy { it.appName.lowercase(Locale.ROOT) }
+    }
 }
+
+data class AppActivityGroup(
+    val appName: String,
+    val packageName: String,
+    val appIcon: android.graphics.drawable.Drawable?,
+    val activities: List<ActivityActionItem>,
+    var isExpanded: Boolean = false
+)
+
+data class ActivityActionItem(
+    val title: String,
+    val className: String,
+    val packageName: String,
+    val isExported: Boolean
+)

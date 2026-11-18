@@ -38,8 +38,12 @@
         <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.Remapper.Small</item>
 
         <!-- Window System Bars -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="29">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
     </style>
 
     <style name="ShapeAppearance.Remapper.ExtraLarge" parent="ShapeAppearance.Material3.Corner.ExtraLarge">

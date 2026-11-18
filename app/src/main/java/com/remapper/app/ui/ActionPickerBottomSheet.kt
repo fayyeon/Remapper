@@ -18,6 +18,7 @@ import com.remapper.app.data.TriggerType
 import com.remapper.app.databinding.BottomSheetActionPickerBinding
 import com.remapper.app.ui.adapter.ActionAdapter
 import com.remapper.app.ui.adapter.AppAdapter
+import com.remapper.app.ui.adapter.AppActivityGroupAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,12 +28,12 @@ class ActionPickerBottomSheet : BottomSheetDialogFragment() {
     private var _binding: BottomSheetActionPickerBinding? = null
     private val binding get() = _binding!!
 
-    private var trigger: TriggerType = TriggerType.DOUBLE_PRESS_HOME
+    private var trigger: TriggerType = TriggerType.HOLD_HOME
     private var onActionPickedListener: ((RemapAction?) -> Unit)? = null
 
     private lateinit var actionAdapter: ActionAdapter
     private lateinit var appAdapter: AppAdapter
-    private lateinit var shortcutAdapter: AppAdapter
+    private lateinit var activityGroupAdapter: AppActivityGroupAdapter
 
     private var currentTab = 0
 
@@ -49,7 +50,7 @@ class ActionPickerBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val triggerKey = arguments?.getString(ARG_TRIGGER_KEY)
-        trigger = TriggerType.fromKey(triggerKey ?: "") ?: TriggerType.DOUBLE_PRESS_HOME
+        trigger = TriggerType.fromKey(triggerKey ?: "") ?: TriggerType.HOLD_HOME
 
         binding.tvPickerSubtitle.text = getString(R.string.subtitle_triggers) + ": " + getString(trigger.titleRes)
 
@@ -67,7 +68,7 @@ class ActionPickerBottomSheet : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        shortcutAdapter = AppAdapter(currentAction?.id) { selected ->
+        activityGroupAdapter = AppActivityGroupAdapter { selected ->
             onActionPickedListener?.invoke(selected)
             dismiss()
         }
@@ -79,16 +80,14 @@ class ActionPickerBottomSheet : BottomSheetDialogFragment() {
         val quickActions = ActionRepository.getQuickPanelActions(requireContext())
         actionAdapter.setActions(quickActions)
 
-        // Load Shortcuts (Alphabetically sorted)
-        val shortcuts = ActionRepository.getNativeAppActions(requireContext())
-        shortcutAdapter.setApps(shortcuts)
-
         // Async load installed apps (Alphabetically sorted)
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch(Dispatchers.IO) {
             val apps = ActionRepository.getInstalledApps(requireContext())
+            val activityGroups = ActionRepository.getAllAppActivities(requireContext())
             withContext(Dispatchers.Main) {
                 appAdapter.setApps(apps)
+                activityGroupAdapter.setGroups(activityGroups)
                 _binding?.progressBar?.visibility = View.GONE
             }
         }
@@ -108,8 +107,8 @@ class ActionPickerBottomSheet : BottomSheetDialogFragment() {
                         appAdapter.filter(query)
                     }
                     2 -> {
-                        binding.rcvActionOptions.adapter = shortcutAdapter
-                        shortcutAdapter.filter(query)
+                        binding.rcvActionOptions.adapter = activityGroupAdapter
+                        activityGroupAdapter.filter(query)
                     }
                 }
             }
@@ -126,7 +125,7 @@ class ActionPickerBottomSheet : BottomSheetDialogFragment() {
                 when (currentTab) {
                     0 -> actionAdapter.filter(q)
                     1 -> appAdapter.filter(q)
-                    2 -> shortcutAdapter.filter(q)
+                    2 -> activityGroupAdapter.filter(q)
                 }
             }
             override fun afterTextChanged(s: Editable?) {}
