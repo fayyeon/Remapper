@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 Expressive Corner Radii -->
+    <dimen name="corner_extra_large">28dp</dimen>
+    <dimen name="corner_large">20dp</dimen>
+    <dimen name="corner_medium">16dp</dimen>
+    <dimen name="corner_small">12dp</dimen>
+    <dimen name="corner_full">999dp</dimen>
+
+    <!-- Paddings & Margins -->
+    <dimen name="spacing_xxs">4dp</dimen>
+    <dimen name="spacing_xs">8dp</dimen>
+    <dimen name="spacing_sm">12dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+
+    <!-- Icon Sizes -->
+    <dimen name="icon_size_sm">20dp</dimen>
+    <dimen name="icon_size_md">24dp</dimen>
+    <dimen name="icon_size_lg">32dp</dimen>
+    <dimen name="icon_size_hero">40dp</dimen>
+</resources>

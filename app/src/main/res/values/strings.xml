@@ -1,0 +1,146 @@
+<resources>
+    <string name="app_name">Remapper</string>
+    <string name="accessibility_service_description">Remapper monitors selected hardware button combinations (Home, Volume Up/Down, Power) to execute your chosen apps, shortcuts, and quick toggles instantly.</string>
+
+    <!-- General UI -->
+    <string name="service_status_active">Remapper Service Active</string>
+    <string name="service_status_inactive">Accessibility Service Needed</string>
+    <string name="service_status_desc_active">Hardware button monitoring is running smoothly in the background.</string>
+    <string name="service_status_desc_inactive">Enable Remapper in Accessibility Settings so it can intercept configured button combos.</string>
+    <string name="btn_enable_service">Enable in Settings</string>
+    <string name="btn_service_active">Running</string>
+    <string name="section_triggers">Button Triggers</string>
+    <string name="section_settings">Preferences &amp; Permissions</string>
+    <string name="subtitle_triggers">Configure actions for specific hardware button combinations</string>
+    <string name="no_action_assigned">None (Tap to configure)</string>
+
+    <!-- Triggers -->
+    <string name="trigger_double_press_home">Double press Home</string>
+    <string name="trigger_double_press_home_desc">Quickly tap the Home button twice in succession</string>
+
+    <string name="trigger_volume_up_plus_down">Volume Up + Volume Down</string>
+    <string name="trigger_volume_up_plus_down_desc">Press both Volume Up and Volume Down together</string>
+
+    <string name="trigger_volume_up_power_single">Volume Up + Power (Single Press)</string>
+    <string name="trigger_volume_up_power_single_desc">Quickly press both Volume Up and Power button together</string>
+
+    <string name="trigger_volume_up_power_hold">Volume Up + Power (Hold)</string>
+    <string name="trigger_volume_up_power_hold_desc">Press and hold Volume Up and Power button for 0.5s</string>
+
+    <string name="trigger_volume_up_power_double">Volume Up + Power (Double Press)</string>
+    <string name="trigger_volume_up_power_double_desc">Press Volume Up and Power button twice in rapid succession</string>
+
+    <!-- Action Categories -->
+    <string name="tab_quick_panel">Quick Panel &amp; System</string>
+    <string name="tab_apps">Installed Apps</string>
+    <string name="tab_shortcuts">App Actions &amp; Shortcuts</string>
+    <string name="search_hint">Search actions or apps…</string>
+    <string name="choose_action_title">Choose Action</string>
+    <string name="clear_action">Clear Mapping</string>
+
+    <!-- Quick Panel & System Actions (Sorted Alphabetically) -->
+    <string name="action_airplane_mode">Airplane Mode</string>
+    <string name="action_airplane_mode_desc">Toggle Airplane Mode directly (ADB) or open system panel</string>
+
+    <string name="action_auto_rotate">Auto-Rotate Screen</string>
+    <string name="action_auto_rotate_desc">Directly toggle screen auto-rotation on/off</string>
+
+    <string name="action_battery_saver">Battery Saver</string>
+    <string name="action_battery_saver_desc">Directly toggle battery saver (ADB) or open battery saver settings</string>
+
+    <string name="action_bluetooth">Bluetooth</string>
+    <string name="action_bluetooth_desc">Toggle Bluetooth state or open Bluetooth quick settings panel</string>
+
+    <string name="action_camera_access">Camera Access (Mute)</string>
+    <string name="action_camera_access_desc">Toggle camera sensor privacy block or open privacy settings</string>
+
+    <string name="action_dark_mode">Dark Mode</string>
+    <string name="action_dark_mode_desc">Directly toggle system dark / light theme</string>
+
+    <string name="action_data_saver">Data Saver</string>
+    <string name="action_data_saver_desc">Toggle data saver mode (ADB) or open data saver panel</string>
+
+    <string name="action_dnd">Do Not Disturb (DND)</string>
+    <string name="action_dnd_desc">Directly toggle Do Not Disturb on/off</string>
+
+    <string name="action_extra_dim">Extra Dim</string>
+    <string name="action_extra_dim_desc">Directly toggle Extra Dim screen reduction (ADB) or open display settings</string>
+
+    <string name="action_eye_protection">Eye Protection (Night Light)</string>
+    <string name="action_eye_protection_desc">Directly toggle Night Light tint (ADB) or open night display settings</string>
+
+    <string name="action_flashlight">Flashlight (Torch)</string>
+    <string name="action_flashlight_desc">Directly toggle the device camera LED flashlight on/off</string>
+
+    <string name="action_location">Location (GPS)</string>
+    <string name="action_location_desc">Directly toggle GPS location (ADB) or open location settings</string>
+
+    <string name="action_lock_screen">Lock Screen</string>
+    <string name="action_lock_screen_desc">Directly lock the screen immediately</string>
+
+    <string name="action_microphone_access">Microphone Access (Mute)</string>
+    <string name="action_microphone_access_desc">Directly toggle microphone mute state on/off</string>
+
+    <string name="action_mobile_data">Mobile Data</string>
+    <string name="action_mobile_data_desc">Open Internet &amp; cellular data quick connectivity panel</string>
+
+    <string name="action_nfc">NFC</string>
+    <string name="action_nfc_desc">Directly toggle NFC (ADB) or open NFC settings</string>
+
+    <string name="action_notifications">Notifications Panel</string>
+    <string name="action_notifications_desc">Expand the system notification shade</string>
+
+    <string name="action_personal_hotspot">Personal Hotspot</string>
+    <string name="action_personal_hotspot_desc">Open personal hotspot and tethering configuration</string>
+
+    <string name="action_power_menu">Power Menu</string>
+    <string name="action_power_menu_desc">Show the system power &amp; restart dialog</string>
+
+    <string name="action_quick_settings">Quick Settings Panel</string>
+    <string name="action_quick_settings_desc">Pull down the Quick Settings notification panel</string>
+
+    <string name="action_ringer_cycle">Ringer Mode: Cycle (Normal / Vibrate / Silent)</string>
+    <string name="action_ringer_cycle_desc">Directly cycle sound profile through normal, vibrate, and silent</string>
+
+    <string name="action_ringer_mute">Ringer Mode: Mute (Silent)</string>
+    <string name="action_ringer_mute_desc">Directly switch ringer mode to silent</string>
+
+    <string name="action_ringer_vibrate">Ringer Mode: Vibrate Only</string>
+    <string name="action_ringer_vibrate_desc">Directly switch ringer mode to vibrate only</string>
+
+    <string name="action_screenshot">Screenshot</string>
+    <string name="action_screenshot_desc">Directly take a full screenshot instantly</string>
+
+    <string name="action_split_screen">Split Screen</string>
+    <string name="action_split_screen_desc">Toggle split screen / multi-window mode</string>
+
+    <string name="action_volume_dialog">Volume Dialog</string>
+    <string name="action_volume_dialog_desc">Display system volume slider panel</string>
+
+    <string name="action_wifi">Wi-Fi</string>
+    <string name="action_wifi_desc">Toggle Wi-Fi (ADB) or open native Internet slice panel</string>
+
+    <!-- ADB and Permissions -->
+    <string name="card_adb_title">Unlock Direct Toggles (Optional)</string>
+    <string name="card_adb_desc">Some toggles like Airplane mode, Battery saver, and GPS require WRITE_SECURE_SETTINGS to switch directly without opening panels. One ADB command unlocks them.</string>
+    <string name="btn_view_adb_guide">ADB Guide</string>
+    <string name="adb_dialog_title">Non-Root ADB Permission Guide</string>
+    <string name="adb_dialog_instruction">Run this single ADB command from your computer or wireless debugging terminal (e.g. Shizuku/LADB) to grant direct background toggles:</string>
+    <string name="adb_command">adb shell pm grant com.remapper.app android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="btn_copy_command">Copy Command</string>
+    <string name="copied_to_clipboard">Command copied to clipboard!</string>
+    <string name="pref_haptic">Vibrate on Trigger</string>
+    <string name="pref_haptic_desc">Provide haptic feedback when a combination is detected</string>
+    <string name="pref_write_settings">Write System Settings Permission</string>
+    <string name="pref_write_settings_desc">Required for direct Auto-Rotate toggling</string>
+    <string name="pref_dnd_policy">Do Not Disturb Policy Access</string>
+    <string name="pref_dnd_policy_desc">Required for direct DND and Silent Mode toggling</string>
+    <string name="btn_grant">Grant</string>
+    <string name="granted">Granted</string>
+    <string name="close">Close</string>
+
+    <!-- Badges -->
+    <string name="badge_direct">Direct</string>
+    <string name="badge_adb_direct">Direct (or ADB)</string>
+    <string name="badge_panel">Panel</string>
+</resources>
