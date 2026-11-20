@@ -1,6 +1,6 @@
 # Remapper
 
-Simple button remapper for Android.
+Simple button remapper for Android. No root required.
 
 ---
 
@@ -16,7 +16,7 @@ Simple button remapper for Android.
 
 ## Remap Functionalities
 
-- 🔧 Quick Panel Buttons & System Actions
+- 🔧 Quick Panel Toggles & System Actions
 - 📱 Installed Applications
 - 🏃🏻 App Activities
 
