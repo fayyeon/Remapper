@@ -56,5 +56,5 @@ The APK will be located at `app/build/outputs/apk/debug/app-debug.apk`.
 
 ---
 
-## 📄 License
+## License
 Licensed under the [GNU General Public License v3.0](LICENSE).
