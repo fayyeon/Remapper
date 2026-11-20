@@ -16,9 +16,9 @@ Simple button remapper for Android.
 
 ## Remap Functionalities
 
-- Quick Panel Buttons & System Actions
-- Installed Applications
-- App Activities & Deep Shortcuts (Alphabetical Order)
+- 🔧 Quick Panel Buttons & System Actions
+- 📱 Installed Applications
+- 🏃🏻 App Activities
 
 ---
 
@@ -36,7 +36,7 @@ adb shell pm grant com.remapper.app android.permission.WRITE_SECURE_SETTINGS
 
 ---
 
-## 🛠️ Building & Developing
+## Building & Developing
 
 ### Requirements
 - Android SDK 34+
